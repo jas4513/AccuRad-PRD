@@ -44,6 +44,13 @@ def microsevert_to_mrem(uSv):
     return uSv / 10
 
 
+def hex_to_float(hex_str):
+    return struct.unpack('!f', bytes.fromhex(hex_str))[0]
+
+def seconds_to_hours(seconds):
+    return seconds / 3600
+
+
 def main():
     try:
         with serial.Serial(port=PORT, baudrate=BAUDRATE, timeout=TIMEOUT) as serial_connection:
@@ -63,19 +70,20 @@ def main():
             duration_str = response_bytes_to_hex_string(
                 DURATION_INDEX, response_bytes)
 
-            # convert dose rate from hex to float
-            uSv_rate = struct.unpack('!f', bytes.fromhex(dose_rate_str))[0]
-            print(f"Dose rate: {microsevert_to_mrem(uSv_rate)} mrem/hr")
-            # convert counts per second from hex to float, and then print
-            print(f"CPS: {struct.unpack('!f', bytes.fromhex(cps_str))[0]}")
-            # convert accumulated dose from hex to float
-            uSv = struct.unpack('!f', bytes.fromhex(dose_str))[0]
-            print(f"Dose {microsevert_to_mrem(uSv)} mrem")
-            # convert duration of accumulated dose from hex to float (in seconds)
-            seconds = struct.unpack('!f', bytes.fromhex(duration_str))[0]
-            # convert seconds to hours
-            hours = seconds/3600
-            print(f"Duration: {hours} hours")
+            uSv_rate = hex_to_float(dose_rate_str)
+            counts_per_second = hex_to_float(cps_str)
+            uSv = hex_to_float(dose_str)
+            seconds = hex_to_float(duration_str)
+
+            mrem_per_hour = microsevert_to_mrem(uSv_rate)
+            mrem = microsevert_to_mrem(uSv)
+
+            duration = seconds_to_hours(seconds)
+
+            print(f"Dose rate: {mrem_per_hour} mrem/hr")
+            print(f"CPS: {counts_per_second}")
+            print(f"Dose {mrem} mrem")
+            print(f"Duration: {duration} hours")
 
     except serial.SerialException as e:
         print(f"Error opening serial connection on {PORT}: {e}")
