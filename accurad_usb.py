@@ -49,7 +49,7 @@ def main():
             z = re.split("x", text)
             # check for length and add missing leading zero if needed
             if len(z[1]) == 1:
-                z[1] = "0"+z[1]
+                z[1] = f"0{z[1]}"
             # add bits to string
             if len(dose_rate_str) == 0:
                 dose_rate_str = z[1]
@@ -60,7 +60,7 @@ def main():
             CPS_text = hex(response_bytes[CPS_index[index]])
             zz = re.split("x", CPS_text)
             if len(zz[1]) == 1:
-                zz[1] = "0"+zz[1]
+                zz[1] = f"0{zz[1]}"
             if len(CPS_str) == 0:
                 CPS_str = zz[1]
             else:
@@ -70,7 +70,7 @@ def main():
             Dose_text = hex(response_bytes[dose_index[index]])
             zzz = re.split("x", Dose_text)
             if len(zzz[1]) == 1:
-                zzz[1] = "0"+zzz[1]
+                zzz[1] = f"0{zzz[1]}"
             if len(dose_str) == 0:
                 dose_str = zzz[1]
             else:
@@ -84,25 +84,25 @@ def main():
             if len(dose_str) == 0:
                 duration_str = zzzz[1]
             else:
-                duration_str = duration_str+zzzz[1]
+                duration_str = f"{duration_str}{zzzz[1]}"
 
         # convert dose rate from hex to float
         uSv_rate = struct.unpack('!f', bytes.fromhex(dose_rate_str))[0]
         # convert from microsevert to mrem
         mrem_rate = uSv_rate / 10
-        print("Dose rate: " + str(mrem_rate) + " mrem/hr")
+        print(f"Dose rate: {mrem_rate} mrem/hr")
         # convert counts per second from hex to float, and then print
-        print("CPS: " + str(struct.unpack('!f', bytes.fromhex(CPS_str))[0]))
+        print(f"CPS: {struct.unpack('!f', bytes.fromhex(CPS_str))[0]}")
         # convert accumulated dose from hex to float
         uSv = struct.unpack('!f', bytes.fromhex(dose_str))[0]
         # convert uSv to mrem
         mrem = uSv / 10
-        print("Dose " + str(mrem) + " mrem")
+        print(f"Dose {mrem} mrem")
         # convert duration of accumulated dose from hex to float (in seconds)
         seconds = struct.unpack('!f', bytes.fromhex(duration_str))[0]
         # convert seconds to hours
         hours = seconds/3600
-        print("Duration: " + str(hours) + " hours")
+        print(f"Duration: {hours} hours")
 
     except serial.SerialException as e:
         print(f"Error during communication: {e}")
