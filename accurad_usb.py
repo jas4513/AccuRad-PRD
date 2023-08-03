@@ -4,10 +4,17 @@ import time
 
 import serial
 
-dose_rate_index = [19, 18, 17, 16]
-cps_index = [23, 22, 21, 20]
-dose_index = [47, 46, 45, 44]
-duration_index = [51, 50, 49, 48]
+DOSE_RATE_INDEX = [19, 18, 17, 16]
+CPS_INDEX = [23, 22, 21, 20]
+DOSE_INDEX = [47, 46, 45, 44]
+DURATION_INDEX = [51, 50, 49, 48]
+PORT = "COM8"
+REQUEST_DATA_MESSAGE = bytes.fromhex(
+    '23 21 41 63 63 75 52 61 64 21 23 0A 00 01 00 7E 04 00 11 A7 1E 43 E7')
+BAUDRATE = 115200
+TIMEOUT = 1
+BYTES_TO_READ = 800
+
 
 
 def response_bytes_to_hex_string(index_list, response_bytes):
@@ -25,29 +32,23 @@ def response_bytes_to_hex_string(index_list, response_bytes):
 
 
 def main():
-    # Select COM Port
-    port = "COM8"
-    # Message requesting device data
-    data_to_send = bytes.fromhex(
-        '23 21 41 63 63 75 52 61 64 21 23 0A 00 01 00 7E 04 00 11 A7 1E 43 E7')
-
     try:
-        with serial.Serial(port=port, baudrate=115200, timeout=1) as serial_connection:
+        with serial.Serial(port=PORT, baudrate=BAUDRATE, timeout=TIMEOUT) as serial_connection:
             try:
                 # Write the data
-                serial_connection.write(data_to_send)
+                serial_connection.write(REQUEST_DATA_MESSAGE)
                 # Read the response
-                response_bytes = serial_connection.read(800)
+                response_bytes = serial_connection.read(BYTES_TO_READ)
 
             except serial.SerialException as e:
                 print(f"Error during communication: {e}")
 
             dose_rate_str = response_bytes_to_hex_string(
-                dose_rate_index, response_bytes)
-            cps_str = response_bytes_to_hex_string(cps_index, response_bytes)
-            dose_str = response_bytes_to_hex_string(dose_index, response_bytes)
+                DOSE_RATE_INDEX, response_bytes)
+            cps_str = response_bytes_to_hex_string(CPS_INDEX, response_bytes)
+            dose_str = response_bytes_to_hex_string(DOSE_INDEX, response_bytes)
             duration_str = response_bytes_to_hex_string(
-                duration_index, response_bytes)
+                DURATION_INDEX, response_bytes)
 
             # convert dose rate from hex to float
             uSv_rate = struct.unpack('!f', bytes.fromhex(dose_rate_str))[0]
@@ -68,7 +69,7 @@ def main():
             print(f"Duration: {hours} hours")
 
     except serial.SerialException as e:
-        print(f"Error opening serial connection on {port}: {e}")
+        print(f"Error opening serial connection on {PORT}: {e}")
 
 
 if __name__ == "__main__":
