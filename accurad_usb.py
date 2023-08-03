@@ -57,8 +57,8 @@ def main():
                 dose_rate_str = dose_rate_str+z[1]
 
             # read and rearrange hex numbers for counts per second
-            CPStext = hex(response_bytes[CPS_index[x]])
-            zz = re.split("x", CPStext)
+            CPS_text = hex(response_bytes[CPS_index[x]])
+            zz = re.split("x", CPS_text)
             if len(zz[1]) == 1:
                 zz[1] = "0"+zz[1]
             if len(CPS_str) == 0:
@@ -67,8 +67,8 @@ def main():
                 CPS_str = CPS_str+zz[1]
 
             # read and rearrange hex numbers for accumulated dose
-            Dosetext = hex(response_bytes[dose_index[x]])
-            zzz = re.split("x", Dosetext)
+            Dose_text = hex(response_bytes[dose_index[x]])
+            zzz = re.split("x", Dose_text)
             if len(zzz[1]) == 1:
                 zzz[1] = "0"+zzz[1]
             if len(dose_str) == 0:
@@ -77,8 +77,8 @@ def main():
                 dose_str = dose_str+zzz[1]
 
             # read and rearrange hex numbers for duration of accumulated dose
-            Durationtext = hex(response_bytes[duration_index[x]])
-            zzzz = re.split("x", Durationtext)
+            Duration_text = hex(response_bytes[duration_index[x]])
+            zzzz = re.split("x", Duration_text)
             if len(zzzz[1]) == 1:
                 zzzz[1] = "0"+zzzz[1]
             if len(dose_str) == 0:
@@ -111,7 +111,7 @@ def main():
 
 
 if __name__ == "__main__":
-    starttime = time.time()
+    start_time = time.time()
     while True:
         main()
-        time.sleep(1 - ((time.time() - starttime) % 1))
+        time.sleep(1 - ((time.time() - start_time) % 1))
