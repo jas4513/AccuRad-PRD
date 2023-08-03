@@ -35,9 +35,9 @@ def main():
                 print(f"Error during communication: {e}")
 
             # parse and rearrange data
-            for index in range(0, 4):
+            for index in dose_rate_index:
                 # read hex numbers for dose rate
-                text = hex(response_bytes[dose_rate_index[index]])
+                text = hex(response_bytes[index])
                 # split hex number at X
                 z = re.split("x", text)
                 # check for length and add missing leading zero if needed
@@ -49,8 +49,9 @@ def main():
                 else:
                     dose_rate_str = dose_rate_str+z[1]
 
+            for index in cps_index:
                 # read and rearrange hex numbers for counts per second
-                cps_text = hex(response_bytes[cps_index[index]])
+                cps_text = hex(response_bytes[index])
                 zz = re.split("x", cps_text)
                 if len(zz[1]) == 1:
                     zz[1] = f"0{zz[1]}"
@@ -59,8 +60,9 @@ def main():
                 else:
                     cps_str = cps_str+zz[1]
 
+            for index in dose_index:
                 # read and rearrange hex numbers for accumulated dose
-                dose_text = hex(response_bytes[dose_index[index]])
+                dose_text = hex(response_bytes[index])
                 zzz = re.split("x", dose_text)
                 if len(zzz[1]) == 1:
                     zzz[1] = f"0{zzz[1]}"
@@ -69,8 +71,9 @@ def main():
                 else:
                     dose_str = dose_str+zzz[1]
 
+            for index in duration_index:
                 # read and rearrange hex numbers for duration of accumulated dose
-                duration_text = hex(response_bytes[duration_index[index]])
+                duration_text = hex(response_bytes[index])
                 zzzz = re.split("x", duration_text)
                 if len(zzzz[1]) == 1:
                     zzzz[1] = "0"+zzzz[1]
