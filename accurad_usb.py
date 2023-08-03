@@ -42,9 +42,9 @@ def main():
         response_bytes = serial_connection.read(800)
 
         # parse and rearrange data
-        for x in range(0, 4):
+        for index in range(0, 4):
             # read hex numbers for dose rate
-            text = hex(response_bytes[dose_rate_index[x]])
+            text = hex(response_bytes[dose_rate_index[index]])
             # split hex number at X
             z = re.split("x", text)
             # check for length and add missing leading zero if needed
@@ -57,7 +57,7 @@ def main():
                 dose_rate_str = dose_rate_str+z[1]
 
             # read and rearrange hex numbers for counts per second
-            CPS_text = hex(response_bytes[CPS_index[x]])
+            CPS_text = hex(response_bytes[CPS_index[index]])
             zz = re.split("x", CPS_text)
             if len(zz[1]) == 1:
                 zz[1] = "0"+zz[1]
@@ -67,7 +67,7 @@ def main():
                 CPS_str = CPS_str+zz[1]
 
             # read and rearrange hex numbers for accumulated dose
-            Dose_text = hex(response_bytes[dose_index[x]])
+            Dose_text = hex(response_bytes[dose_index[index]])
             zzz = re.split("x", Dose_text)
             if len(zzz[1]) == 1:
                 zzz[1] = "0"+zzz[1]
@@ -77,7 +77,7 @@ def main():
                 dose_str = dose_str+zzz[1]
 
             # read and rearrange hex numbers for duration of accumulated dose
-            Duration_text = hex(response_bytes[duration_index[x]])
+            Duration_text = hex(response_bytes[duration_index[index]])
             zzzz = re.split("x", Duration_text)
             if len(zzzz[1]) == 1:
                 zzzz[1] = "0"+zzzz[1]
