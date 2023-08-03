@@ -98,5 +98,6 @@ if __name__ == "__main__":
         ms_in_time_since_start = time_since_start % 1
         ms_left_in_time_since_start = 1 - ms_in_time_since_start
         # This has us wait until the next second to run the loop again
-        # Why?
+        # Why? It would be simpler and easier to understand if we just
+        # ran the loop with a fixed delay.
         time.sleep(ms_left_in_time_since_start)
