@@ -26,6 +26,16 @@ def response_bytes_to_hex_string(index_list, response_bytes):
         # Our formatting specification after the colon tells tells the f-string to
         # convert to a hex string, and then pad the string with leading zeros.
         result_str = f"{result_str}{response_bytes[index]:02x}"
+        # After having a better understanding of how this is used, I don't think
+        # we need to convert this to a string. We can just use the bytes directly.
+        #
+        # result = b''
+        # for index in index_list:
+        #   result = result + response_bytes[index]
+        # return result
+        #
+        # I'm not making this change because I can see an argument that
+        # converting to hex is simpler to reason about.
 
     return result_str
 
