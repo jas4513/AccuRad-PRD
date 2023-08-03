@@ -16,7 +16,6 @@ TIMEOUT = 1
 BYTES_TO_READ = 800
 
 
-
 def response_bytes_to_hex_string(index_list, response_bytes):
     result_str = ""
 
@@ -29,6 +28,10 @@ def response_bytes_to_hex_string(index_list, response_bytes):
         result_str = f"{result_str}{response_bytes[index]:02x}"
 
     return result_str
+
+
+def microsevert_to_mrem(uSv):
+    return uSv / 10
 
 
 def main():
@@ -52,16 +55,12 @@ def main():
 
             # convert dose rate from hex to float
             uSv_rate = struct.unpack('!f', bytes.fromhex(dose_rate_str))[0]
-            # convert from microsevert to mrem
-            mrem_rate = uSv_rate / 10
-            print(f"Dose rate: {mrem_rate} mrem/hr")
+            print(f"Dose rate: {microsevert_to_mrem(uSv_rate)} mrem/hr")
             # convert counts per second from hex to float, and then print
             print(f"CPS: {struct.unpack('!f', bytes.fromhex(cps_str))[0]}")
             # convert accumulated dose from hex to float
             uSv = struct.unpack('!f', bytes.fromhex(dose_str))[0]
-            # convert uSv to mrem
-            mrem = uSv / 10
-            print(f"Dose {mrem} mrem")
+            print(f"Dose {microsevert_to_mrem(uSv)} mrem")
             # convert duration of accumulated dose from hex to float (in seconds)
             seconds = struct.unpack('!f', bytes.fromhex(duration_str))[0]
             # convert seconds to hours
