@@ -10,12 +10,23 @@ dose_index = [47, 46, 45, 44]
 duration_index = [51, 50, 49, 48]
 
 
-def main():
-    dose_rate_str = ""
-    cps_str = ""
-    dose_str = ""
-    duration_str = ""
+def response_bytes_to_hex_string(index_list, response_bytes):
+    result_str = ""
 
+    # parse and rearrange data
+    for index in index_list:
+        text = hex(response_bytes[index])
+        z = re.split("x", text)
+        # check for length and add missing leading zero if needed
+        if len(z[1]) == 1:
+            z[1] = f"0{z[1]}"
+
+        result_str = f"{result_str}{z[1]}"
+
+    return result_str
+
+
+def main():
     # Select COM Port
     port = "COM8"
     # Message requesting device data
@@ -27,60 +38,18 @@ def main():
             try:
                 # Write the data
                 serial_connection.write(data_to_send)
-
                 # Read the response
                 response_bytes = serial_connection.read(800)
 
             except serial.SerialException as e:
                 print(f"Error during communication: {e}")
 
-            # parse and rearrange data
-            for index in dose_rate_index:
-                # read hex numbers for dose rate
-                text = hex(response_bytes[index])
-                # split hex number at X
-                z = re.split("x", text)
-                # check for length and add missing leading zero if needed
-                if len(z[1]) == 1:
-                    z[1] = f"0{z[1]}"
-                # add bits to string
-                if len(dose_rate_str) == 0:
-                    dose_rate_str = z[1]
-                else:
-                    dose_rate_str = dose_rate_str+z[1]
-
-            for index in cps_index:
-                # read and rearrange hex numbers for counts per second
-                cps_text = hex(response_bytes[index])
-                zz = re.split("x", cps_text)
-                if len(zz[1]) == 1:
-                    zz[1] = f"0{zz[1]}"
-                if len(cps_str) == 0:
-                    cps_str = zz[1]
-                else:
-                    cps_str = cps_str+zz[1]
-
-            for index in dose_index:
-                # read and rearrange hex numbers for accumulated dose
-                dose_text = hex(response_bytes[index])
-                zzz = re.split("x", dose_text)
-                if len(zzz[1]) == 1:
-                    zzz[1] = f"0{zzz[1]}"
-                if len(dose_str) == 0:
-                    dose_str = zzz[1]
-                else:
-                    dose_str = dose_str+zzz[1]
-
-            for index in duration_index:
-                # read and rearrange hex numbers for duration of accumulated dose
-                duration_text = hex(response_bytes[index])
-                zzzz = re.split("x", duration_text)
-                if len(zzzz[1]) == 1:
-                    zzzz[1] = "0"+zzzz[1]
-                if len(dose_str) == 0:
-                    duration_str = zzzz[1]
-                else:
-                    duration_str = f"{duration_str}{zzzz[1]}"
+            dose_rate_str = response_bytes_to_hex_string(
+                dose_rate_index, response_bytes)
+            cps_str = response_bytes_to_hex_string(cps_index, response_bytes)
+            dose_str = response_bytes_to_hex_string(dose_index, response_bytes)
+            duration_str = response_bytes_to_hex_string(
+                duration_index, response_bytes)
 
             # convert dose rate from hex to float
             uSv_rate = struct.unpack('!f', bytes.fromhex(dose_rate_str))[0]
