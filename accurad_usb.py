@@ -9,7 +9,7 @@ DOSE_INDEX = [47, 46, 45, 44]
 DURATION_INDEX = [51, 50, 49, 48]
 PORT = "COM8"
 REQUEST_DATA_MESSAGE = bytes.fromhex(
-    '23 21 41 63 63 75 52 61 64 21 23 0A 00 01 00 7E 04 00 11 A7 1E 43 E7')
+    "23 21 41 63 63 75 52 61 64 21 23 0A 00 01 00 7E 04 00 11 A7 1E 43 E7")
 BAUDRATE = 115200
 TIMEOUT = 1
 BYTES_TO_READ = 800
@@ -44,7 +44,7 @@ def microsevert_to_mrem(uSv):
 
 
 def hex_to_float(hex_str):
-    return struct.unpack('!f', bytes.fromhex(hex_str))[0]
+    return struct.unpack("!f", bytes.fromhex(hex_str))[0]
 
 
 def seconds_to_hours(seconds):
@@ -65,8 +65,7 @@ def main(serial_connection):
         DOSE_RATE_INDEX, response_bytes)
     cps_str = response_bytes_to_hex_string(CPS_INDEX, response_bytes)
     dose_str = response_bytes_to_hex_string(DOSE_INDEX, response_bytes)
-    duration_str = response_bytes_to_hex_string(
-        DURATION_INDEX, response_bytes)
+    duration_str = response_bytes_to_hex_string(DURATION_INDEX, response_bytes)
 
     uSv_rate = hex_to_float(dose_rate_str)
     counts_per_second = hex_to_float(cps_str)
@@ -88,7 +87,9 @@ if __name__ == "__main__":
     start_time = time.time()
 
     try:
-        with serial.Serial(port=PORT, baudrate=BAUDRATE, timeout=TIMEOUT) as serial_connection:
+        with serial.Serial(
+            port=PORT, baudrate=BAUDRATE, timeout=TIMEOUT
+        ) as serial_connection:
             while True:
                 main(serial_connection)
 
