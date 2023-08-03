@@ -13,15 +13,13 @@ duration_index = [51, 50, 49, 48]
 def response_bytes_to_hex_string(index_list, response_bytes):
     result_str = ""
 
-    # parse and rearrange data
+    # Parse and rearrange data
     for index in index_list:
-        text = hex(response_bytes[index])
-        z = re.split("x", text)
-        # check for length and add missing leading zero if needed
-        if len(z[1]) == 1:
-            z[1] = f"0{z[1]}"
-
-        result_str = f"{result_str}{z[1]}"
+        # Use f-string formatting to add the hex value to the result string.
+        # The f-string automatically converts the bytes to a string.
+        # Our formatting specification after the colon tells tells the f-string to
+        # convert to a hex string, and then pad the string with leading zeros.
+        result_str = f"{result_str}{response_bytes[index]:02x}"
 
     return result_str
 
