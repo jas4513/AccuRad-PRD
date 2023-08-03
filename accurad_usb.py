@@ -5,7 +5,7 @@ import time
 import serial
 
 dose_rate_index = [19, 18, 17, 16]
-CPS_index = [23, 22, 21, 20]
+cps_index = [23, 22, 21, 20]
 dose_index = [47, 46, 45, 44]
 duration_index = [51, 50, 49, 48]
 
@@ -21,7 +21,7 @@ def open_serial_connection(port):
 
 def main():
     dose_rate_str = ""
-    CPS_str = ""
+    cps_str = ""
     dose_str = ""
     duration_str = ""
 
@@ -57,18 +57,18 @@ def main():
                 dose_rate_str = dose_rate_str+z[1]
 
             # read and rearrange hex numbers for counts per second
-            CPS_text = hex(response_bytes[CPS_index[index]])
-            zz = re.split("x", CPS_text)
+            cps_text = hex(response_bytes[cps_index[index]])
+            zz = re.split("x", cps_text)
             if len(zz[1]) == 1:
                 zz[1] = f"0{zz[1]}"
-            if len(CPS_str) == 0:
-                CPS_str = zz[1]
+            if len(cps_str) == 0:
+                cps_str = zz[1]
             else:
-                CPS_str = CPS_str+zz[1]
+                cps_str = cps_str+zz[1]
 
             # read and rearrange hex numbers for accumulated dose
-            Dose_text = hex(response_bytes[dose_index[index]])
-            zzz = re.split("x", Dose_text)
+            dose_text = hex(response_bytes[dose_index[index]])
+            zzz = re.split("x", dose_text)
             if len(zzz[1]) == 1:
                 zzz[1] = f"0{zzz[1]}"
             if len(dose_str) == 0:
@@ -77,8 +77,8 @@ def main():
                 dose_str = dose_str+zzz[1]
 
             # read and rearrange hex numbers for duration of accumulated dose
-            Duration_text = hex(response_bytes[duration_index[index]])
-            zzzz = re.split("x", Duration_text)
+            duration_text = hex(response_bytes[duration_index[index]])
+            zzzz = re.split("x", duration_text)
             if len(zzzz[1]) == 1:
                 zzzz[1] = "0"+zzzz[1]
             if len(dose_str) == 0:
@@ -92,7 +92,7 @@ def main():
         mrem_rate = uSv_rate / 10
         print(f"Dose rate: {mrem_rate} mrem/hr")
         # convert counts per second from hex to float, and then print
-        print(f"CPS: {struct.unpack('!f', bytes.fromhex(CPS_str))[0]}")
+        print(f"CPS: {struct.unpack('!f', bytes.fromhex(cps_str))[0]}")
         # convert accumulated dose from hex to float
         uSv = struct.unpack('!f', bytes.fromhex(dose_str))[0]
         # convert uSv to mrem
