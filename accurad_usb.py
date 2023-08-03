@@ -73,6 +73,12 @@ def main():
 
 if __name__ == "__main__":
     start_time = time.time()
+
     while True:
         main()
-        time.sleep(1 - ((time.time() - start_time) % 1))
+        time_since_start = time.time() - start_time
+        ms_in_time_since_start = time_since_start % 1
+        ms_left_in_time_since_start = 1 - ms_in_time_since_start
+        # This has us wait until the next second to run the loop again
+        # Why?
+        time.sleep(ms_left_in_time_since_start)
