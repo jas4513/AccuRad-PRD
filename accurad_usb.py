@@ -1,9 +1,9 @@
-import serial
-import re
 import binascii
+import re
 import struct
 import time
 
+import serial
 
 dose_rate_index = [19, 18, 17, 16]
 CPS_index = [23, 22, 21, 20]
