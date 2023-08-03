@@ -31,7 +31,6 @@ def main():
     # Message requesting device data
     data_to_send = bytes.fromhex(
         '23 21 41 63 63 75 52 61 64 21 23 0A 00 01 00 7E 04 00 11 A7 1E 43 E7')
-    # print(data_to_send)
 
     serial_connection = open_serial_connection(port)
     if not serial_connection:
@@ -57,9 +56,8 @@ def main():
                 dose_rate_str = z[1]
             else:
                 dose_rate_str = dose_rate_str+z[1]
-            #print("Dose rate: " + dose_rate_str + " microSv/hr")
 
-            # read and rearrage hex numbers for counts per second
+            # read and rearrange hex numbers for counts per second
             CPStext = hex(response_bytes[CPS_index[x]])
             zz = re.split("x", CPStext)
             if len(zz[1]) == 1:
@@ -88,12 +86,6 @@ def main():
                 duration_str = zzzz[1]
             else:
                 duration_str = duration_str+zzzz[1]
-
-            #print("CPS: " +CPS_str)
-        #print("Dose rate " + hex(response_bytes[19])+hex(response_bytes[18])+hex(response_bytes[17])+hex(response_bytes[16]))
-        #print("CPS " + hex(response_bytes[23])+hex(response_bytes[22])+hex(response_bytes[21])+hex(response_bytes[20]))
-        # Print the response bytes
-        #print("Response bytes:", [hex(byte) for byte in response_bytes])
 
         # convert dose rate from hex to float
         uSv_rate = struct.unpack('!f', bytes.fromhex(dose_rate_str))[0]
