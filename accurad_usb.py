@@ -47,57 +47,59 @@ def microsevert_to_mrem(uSv):
 def hex_to_float(hex_str):
     return struct.unpack('!f', bytes.fromhex(hex_str))[0]
 
+
 def seconds_to_hours(seconds):
     return seconds / 3600
 
 
-def main():
+def main(serial_connection):
     try:
-        with serial.Serial(port=PORT, baudrate=BAUDRATE, timeout=TIMEOUT) as serial_connection:
-            try:
-                # Write the data
-                serial_connection.write(REQUEST_DATA_MESSAGE)
-                # Read the response
-                response_bytes = serial_connection.read(BYTES_TO_READ)
-
-            except serial.SerialException as e:
-                print(f"Error during communication: {e}")
-
-            dose_rate_str = response_bytes_to_hex_string(
-                DOSE_RATE_INDEX, response_bytes)
-            cps_str = response_bytes_to_hex_string(CPS_INDEX, response_bytes)
-            dose_str = response_bytes_to_hex_string(DOSE_INDEX, response_bytes)
-            duration_str = response_bytes_to_hex_string(
-                DURATION_INDEX, response_bytes)
-
-            uSv_rate = hex_to_float(dose_rate_str)
-            counts_per_second = hex_to_float(cps_str)
-            uSv = hex_to_float(dose_str)
-            seconds = hex_to_float(duration_str)
-
-            mrem_per_hour = microsevert_to_mrem(uSv_rate)
-            mrem = microsevert_to_mrem(uSv)
-
-            duration = seconds_to_hours(seconds)
-
-            print(f"Dose rate: {mrem_per_hour} mrem/hr")
-            print(f"CPS: {counts_per_second}")
-            print(f"Dose {mrem} mrem")
-            print(f"Duration: {duration} hours")
+        # Write the data
+        serial_connection.write(REQUEST_DATA_MESSAGE)
+        # Read the response
+        response_bytes = serial_connection.read(BYTES_TO_READ)
 
     except serial.SerialException as e:
-        print(f"Error opening serial connection on {PORT}: {e}")
+        print(f"Error during communication: {e}")
+
+    dose_rate_str = response_bytes_to_hex_string(
+        DOSE_RATE_INDEX, response_bytes)
+    cps_str = response_bytes_to_hex_string(CPS_INDEX, response_bytes)
+    dose_str = response_bytes_to_hex_string(DOSE_INDEX, response_bytes)
+    duration_str = response_bytes_to_hex_string(
+        DURATION_INDEX, response_bytes)
+
+    uSv_rate = hex_to_float(dose_rate_str)
+    counts_per_second = hex_to_float(cps_str)
+    uSv = hex_to_float(dose_str)
+    seconds = hex_to_float(duration_str)
+
+    mrem_per_hour = microsevert_to_mrem(uSv_rate)
+    mrem = microsevert_to_mrem(uSv)
+
+    duration = seconds_to_hours(seconds)
+
+    print(f"Dose rate: {mrem_per_hour} mrem/hr")
+    print(f"CPS: {counts_per_second}")
+    print(f"Dose {mrem} mrem")
+    print(f"Duration: {duration} hours")
 
 
 if __name__ == "__main__":
     start_time = time.time()
 
-    while True:
-        main()
-        time_since_start = time.time() - start_time
-        ms_in_time_since_start = time_since_start % 1
-        ms_left_in_time_since_start = 1 - ms_in_time_since_start
-        # This has us wait until the next second to run the loop again
-        # Why? It would be simpler and easier to understand if we just
-        # ran the loop with a fixed delay.
-        time.sleep(ms_left_in_time_since_start)
+    try:
+        with serial.Serial(port=PORT, baudrate=BAUDRATE, timeout=TIMEOUT) as serial_connection:
+            while True:
+                main(serial_connection)
+
+                time_since_start = time.time() - start_time
+                ms_in_time_since_start = time_since_start % 1
+                ms_left_in_time_since_start = 1 - ms_in_time_since_start
+                # This has us wait until the next second to run the loop again
+                # Why? It would be simpler and easier to understand if we just
+                # ran the loop with a fixed delay.
+                time.sleep(ms_left_in_time_since_start)
+
+    except serial.SerialException as e:
+        print(f"Error opening serial connection on {PORT}: {e}")
