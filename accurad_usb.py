@@ -84,22 +84,25 @@ def main(serial_connection):
 
 
 if __name__ == "__main__":
-    start_time = time.time()
-
     try:
         with serial.Serial(
             port=PORT, baudrate=BAUDRATE, timeout=TIMEOUT
         ) as serial_connection:
             while True:
+                start_time = time.time()
+
                 main(serial_connection)
 
                 time_since_start = time.time() - start_time
-                ms_in_time_since_start = time_since_start % 1
-                ms_left_in_time_since_start = 1 - ms_in_time_since_start
-                # This has us wait until the next second to run the loop again
-                # Why? It would be simpler and easier to understand if we just
-                # ran the loop with a fixed delay.
-                time.sleep(ms_left_in_time_since_start)
+
+                # If the loop took longer than 1 second, we don't want to wait
+                if time_since_start >= 1:
+                    continue
+
+                # We get the rest of the time left in the second
+                ms_left_in_the_second = 1 - time_since_start
+                # We aim to get data every second, so we wait the rest of the time
+                time.sleep(ms_left_in_the_second)
 
     except serial.SerialException as e:
         print(f"Error opening serial connection on {PORT}: {e}")
