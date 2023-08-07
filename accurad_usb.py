@@ -77,10 +77,10 @@ def main(serial_connection):
 
     duration = seconds_to_hours(seconds)
 
-    print(f"Dose rate: {mrem_per_hour} mrem/hr")
-    print(f"CPS: {counts_per_second}")
-    print(f"Dose {mrem} mrem")
-    print(f"Duration: {duration} hours")
+    print(f"Dose rate: {mrem_per_hour:.3f} mrem/hr")
+    print(f"CPS: {counts_per_second:.1f}")
+    print(f"Dose {mrem:.3f} mrem")
+    print(f"Duration: {duration:.3f} hours")
 
 
 if __name__ == "__main__":
